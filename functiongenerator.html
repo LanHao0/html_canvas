@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+
+	<script>
+		function generator(x,y){
+			var canvas =document.getElementById("fx");
+			var ctx=canvas.getContext('2d');
+			ctx.beginPath();
+			ctx.moveTo(0,0);
+				for(var i=0; i<60;i++){
+					ctx.lineTo(x*i,y*i);
+					console.log(x*i,y*i);
+				}
+			ctx.closePath();
+			ctx.stroke();
+			console.log("制作完成");
+		}
+		
+		function go(){
+			var x = document.getElementById("x").value;
+			var y = document.getElementById("y").value;
+			
+			generator(x,y);
+		
+		}
+	</script>
+</head>
+
+<body>
+	<canvas id="fx" width="800" height="800"></canvas>
+	<input id="x" />x=<input id="y" />y<input type="button" id="enter" value="确定" onClick="go();"/>
+</body>
+</html>

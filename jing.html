@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+<title>井字棋</title>
+
+	<style>
+		body{
+			background: linear-gradient(to right,#43D598,#5394EC);
+		}
+	</style>
+
+<script>
+	function start(){
+	var over=false;
+	var Chessboard=[];//-1 黑，0无，1白
+	var chess_num=0;
+	var nownow=0;
+	document.getElementById('canvas1').setAttribute("height","360px");
+	document.getElementById('canvas1').setAttribute("width","360px");
+	var tmp=document.getElementById('canvas1');
+	
+	var canva=tmp.getContext('2d');
+	
+	
+	for(var i=0;i<=3;i++){
+		canva.beginPath();
+		canva.fillText(i,30+i*100,15);
+		
+		canva.moveTo(30+i*100,30);
+		canva.lineTo(30+i*100,330);
+		canva.stroke();
+		if(i!=0){
+		canva.fillText(i,15,30+i*100);
+		}
+		canva.moveTo(30,30+i*100);
+		canva.lineTo(330,30+i*100);
+		canva.closePath();
+		canva.stroke();
+	}
+	
+	//初始化棋盘信息，将二维数组所有项全部初始化为0
+	for (var i = -1; i <= 4; i++) {
+	Chessboard[i]=[];
+	for (var j = -1; j <= 4; j++) {
+		Chessboard[i][j]=0;
+	}
+}
+
+	var now_chess=true;
+	
+	var drawChess=function(i,j){
+		
+		canva.beginPath();
+
+		if(now_chess){// 黑
+			
+			canva.arc(78+i*100,80+j*100,20,0,2*Math.PI,true);
+			canva.closePath();
+			canva.lineWidth=7;
+			canva.strokeStyle="#ff0000";
+			canva.stroke();
+			
+		}else{//白
+			
+			canva.moveTo(55+i*100,55+j*100);
+			canva.lineTo(100+i*100,105+j*100);
+			canva.moveTo(100+i*100,55+j*100);
+			canva.lineTo(55+i*100,105+j*100);
+			canva.strokeStyle="#fff";
+			canva.stroke();
+		}
+		canva.closePath();
+		
+	}
+	
+	tmp.onclick=function(e){
+		if(over){
+			window.alert("本轮游戏已经结束了，请刷新浏览器重新开始！");
+		}else{
+		
+		var x=e.offsetX;
+		var y=e.offsetY;
+		console.log(x+"  "+y);
+		var i=Math.floor(x/100);
+		var j=Math.floor(y/100);
+		
+		
+		if(Chessboard[i][j]===0){
+			if(i>=0&&j>=0&&i<=2&&j<=2){
+				console.log("drawhere:"+i+","+j);
+				drawChess(i,j);
+			
+			chess_num++;
+			console.log("目前棋子数："+chess_num);
+			if(now_chess){ //黑子
+				Chessboard[i][j]=-1;
+				nownow=-1;
+				now_chess=false;//将下一步棋的颜色进行反转
+				
+			}else{
+				Chessboard[i][j]=1;
+				nownow=1;
+				now_chess=true;//将下一步棋的颜色进行反转
+			}
+			console.log(nownow);
+
+			//遍历是否赢
+			if(chess_num>4){
+				var count1=0;
+				var count2=0;
+				var count3=0;
+				var count4=0;
+				console.log(chess_num);
+				//横向，参考博客 陶伟基
+				for(var cc=i;cc>=0;cc--){
+					if(Chessboard[cc][j]!=nownow){
+						break;
+					}
+					count1++;
+				}//左
+				
+				for(var dd=i+1;dd<=15;dd++){
+					if(Chessboard[dd][j]!=nownow){
+						break;
+					}
+					count1++;
+				}//右
+				console.log("横向："+count1);
+				
+				for(var ee=j;ee>=0;ee--){
+					if(Chessboard[i][ee]!=nownow){
+						break;
+					}
+					count2++;
+				}//上
+				for(var ff=j+1;ff<=15;ff++){
+					if(Chessboard[i][ff]!=nownow){
+						break;
+					}
+					count2++;
+				}//下
+				console.log("竖向："+count2);
+				
+			
+				for(var gg=i,hh=j;gg>=0,hh>=0;gg--,hh--){
+					if(Chessboard[gg][hh]!=nownow){
+						break;
+					}
+					count3++;
+					
+				}
+				for(var jj=i+1,kk=j+1;jj<=15,kk<=15;jj++,kk++){
+					if(Chessboard[jj][kk]!=nownow){
+						break;
+					}
+					count3++;
+				}//右下
+				console.log("左上右下："+count3);
+				
+				for(var ll=i,mm=j;ll>=0,mm<=15;ll++,mm--){
+					if(Chessboard[ll][mm]!=nownow){
+						break;
+					}
+					count4++;
+				}
+	
+							
+				for(var nn=i-1,oo=j+1;nn<=15,oo>=0;nn--,oo++){
+					if(Chessboard[nn][oo]!=nownow){
+						break;
+					}
+					count4++;
+				}
+				console.log("右上左下："+count4);
+				
+				if(count1>=3||count2>=3||count3>=3||count4>=3){
+					if(nownow==-1){
+						window.alert("圈赢了");
+					}else if(nownow==1){
+						window.alert("叉赢了");
+						}
+					over=true;
+				}
+				//todo 平局
+}else if(chess_num==9 && !over){
+	window.alert("平局");
+}
+
+				}
+			
+		}
+	}
+		}
+}
+</script>
+</head>
+<body onLoad="start();">
+	<div style="margin: auto;width: 360px;background-color: rgba(255,255,255,0.20);padding: 10px;">	
+<canvas id="canvas1" ></canvas>
+		</div>
+	</body>
+</html>
